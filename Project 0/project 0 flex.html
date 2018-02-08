@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Project 0</title>
+        <style>
+            body{
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                margin: 0rem;
+                align-content: stretch;
+            }
+
+            main{
+                display: flex;
+                flex: 1 1 auto;
+            }
+
+            .header-footer{
+                height: 4.375rem;
+                color: white;
+            }
+
+            .center-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            header{
+                background-color: darkgray;
+            }
+
+            footer{
+                background-color: grey;
+            }
+
+            article{
+                flex: 1 1 auto;
+                background-color: lightgray;
+            }
+
+            aside{
+                background-color: white;
+                flex: 0 1 18.75rem;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <header class="header-footer center-content"><div>Header</div></header>
+        <main>
+            <article class="center-content">
+                    <div>Main Content</div>
+            </article>
+            <aside class="center-content">
+                    <div>Sidebar</div>
+            </aside>
+        </main>
+        <footer class="header-footer center-content"><div>Footer</div></footer>
+    </body>
+</html>
+
+<!-- CSS variables -->

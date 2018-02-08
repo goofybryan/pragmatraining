@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Project 0</title>
+    <style>
+        body {
+            display: grid;
+            height: 100vh;
+            margin: 0rem;
+            grid-template: 4.375rem auto 4.375rem / auto 18.75rem;
+        }
+
+        main {
+            background-color: lightgray;
+        }
+
+        header {
+            background-color: darkgray;
+        }
+
+        footer {
+            background-color: grey;
+        }
+
+        aside {
+            background-color: white;
+        }
+
+        .header-footer {
+            color: white;
+            grid-area: span 1 / span 2;
+        }
+
+        .center-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header-footer center-content">
+        <div>Header</div>
+    </header>
+    <main class="center-content">
+        <div>Main Content</div>
+    </main>
+    <aside class="center-content">
+        <div>Sidebar</div>
+    </aside>
+    <footer class="header-footer center-content">
+        <div>Footer</div>
+    </footer>
+</body>
+
+</html>
+
+<!-- CSS variables -->
