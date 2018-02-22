@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Project 1.1</title>
+    <style>
+        :root {
+            --progress-color: #ffffff;
+            --pending-color: #FB0;
+            --failed-color: red;
+            --running-color: blue;
+            --passed-color: green;
+        }
+
+        body {
+            height: 100vh;
+            margin: 0rem;
+        }
+
+        main {
+            margin: 2rem;
+        }
+
+        .progress-grid {
+            border: 1px solid grey;
+            display: grid;
+            grid-template-columns: 5rem 1fr 5rem 1fr 5rem 1fr auto;
+            grid-template-rows: 4rem;
+            grid-auto-rows: 5rem;
+            --progress-background: silver;
+            --progress-text-padding: 0.4rem;
+        }
+
+        .progress-header {
+            align-items: end;
+            text-align: center;
+            display: inherit;
+            font: 1.5rem bold;
+            grid-row: 1;
+            padding: var(--progress-text-padding);
+        }
+
+        .progress-border{
+            height: 1px;
+            background-color: var(--progress-background);
+            grid-column: 1/8
+        }
+
+        .progress-item-task1 {
+            grid-column: 1;
+        }
+
+        .progress-item-task2 {
+            grid-column: 3;
+        }
+
+        .progress-item-task3 {
+            grid-column: 5;
+        }
+
+        .progress-item-result {
+            grid-column: 7;
+            padding: var(--progress-text-padding);
+        }
+
+        .progress-item-row {
+            display: inherit;
+            align-content: center;
+        }
+
+        .progress-item-text{
+            color: var(--progress-color);
+        }
+
+        .progress-circle {
+            height: 3rem;
+            width: 3rem;
+            background-color: var(--progress-background);
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .progress-circle:after {
+            content: "";
+            height: 2.4rem;
+            width: 2.4rem;
+            background-color: var(--progress-color);
+            border-radius: 50%;
+            margin: 0.3rem;
+            z-index: 2;
+        }
+
+        .progress-display:after{
+            display: block;
+        }
+
+        .progress-bar {
+            height: 1rem;
+            width: auto;
+            -webkit-appearance: none;
+            display: block;
+            background-color: var(--progress-background);
+            padding: 5px 0;
+            margin: auto;
+            --progress-align-circle: 3.6rem;
+            --progress-align-centre: 3.6rem;
+        }
+
+        .progress-bar1 {
+            grid-column: 1/4;
+            z-index: 1;
+            margin-left: var(--progress-align-centre);
+            margin-right: var(--progress-align-circle);
+        }
+
+        .progress-bar2 {
+            grid-column: 3/6;
+            z-index: 1;
+            margin-left: var(--progress-align-centre);
+            margin-right: var(--progress-align-circle);
+        }
+
+        .progress-bar::-webkit-progress-value {
+            background-image: -webkit-linear-gradient(-30deg, transparent 33%, rgba(0, 0, 0, .1) 33%, rgba(0, 0, 0, .1) 66%, transparent 66%),
+            -webkit-linear-gradient(top, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0)),
+            -webkit-linear-gradient(left, var(--progress-color), var(--progress-color));
+
+            background-size: 15px 20px, 100% 100%, 100% 100%;
+        }
+
+        .progress-bar::-webkit-progress-bar {
+            background-color: transparent;
+        }
+
+        .progress-row1 {
+            grid-row: 2;
+            --progress-color: var(--pending-color);
+        }
+
+        .progress-row2 {
+            grid-row: 3;
+            --progress-color: var(--running-color);
+        }
+
+        .progress-row3 {
+            grid-row: 4;
+            --progress-color: var(--passed-color);
+        }
+
+        .progress-row4 {
+            grid-row: 5;
+            --progress-color: var(--failed-color);
+        }
+
+        .progress-row5 {
+            grid-row: 6;
+            --progress-color: var(--passed-color);
+        }
+
+        .progress-row6 {
+            grid-row: 7;
+            --progress-color: var(--failed-color);
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="progress-grid">
+            <div class="progress-header progress-item-task1">Task 1</div>
+            <div class="progress-header progress-item-task2">Task 2</div>
+            <div class="progress-header progress-item-task3">Task 3</div>
+            <div class="progress-header progress-item-result">Status</div>
+
+            <div class="progress-border progress-row1"></div>
+            <div class="progress-circle progress-display progress-item-row progress-item-task1 progress-row1"></div>
+            <progress class="progress-bar progress-item-row progress-bar1 progress-row1" value="0" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task2 progress-row1"></div>
+            <progress class="progress-bar progress-item-row progress-bar2 progress-row1" value="0" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task3 progress-row1"></div>
+            <div class="progress-item-row progress-item-result progress-row1">
+                <span class="progress-item-text">Pending</span>
+            </div>
+
+            <div class="progress-border progress-row2"></div>
+            <div class="progress-circle progress-display progress-item-row progress-item-task1 progress-row2"></div>
+            <progress class="progress-bar progress-item-row progress-bar1 progress-row2" value="50" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task2 progress-row2"></div>
+            <progress class="progress-bar progress-item-row progress-bar2 progress-row2" value="0" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task3 progress-row2"></div>
+            <div class="progress-item-row progress-item-result progress-row2">
+                <span class="progress-item-text">Running</span>
+            </div>
+
+            <div class="progress-border progress-row3"></div>
+            <div class="progress-circle progress-display progress-item-row progress-item-task1 progress-row3"></div>
+            <progress class="progress-bar progress-item-row progress-bar1 progress-row3" value="100" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task2 progress-row3"></div>
+            <progress class="progress-bar progress-item-row progress-bar2 progress-row3" value="100" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task3 progress-row3"></div>
+            <div class="progress-item-row progress-item-result progress-row3">
+                <span class="progress-item-text">Passed</span>
+            </div>
+
+            <div class="progress-border progress-row4"></div>
+            <div class="progress-circle progress-display progress-item-row progress-item-task1 progress-row4"></div>
+            <progress class="progress-bar progress-item-row progress-bar1 progress-row4" value="0" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task2 progress-row4"></div>
+            <progress class="progress-bar progress-item-row progress-bar2 progress-row4" value="0" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task3 progress-row4"></div>
+            <div class="progress-item-row progress-item-result progress-row4">
+                <span class="progress-item-text">Failed</span>
+            </div>
+
+            <div class="progress-border progress-row5"></div>
+            <div class="progress-circle progress-display progress-item-row progress-item-task1 progress-row5"></div>
+            <progress class="progress-bar progress-item-row progress-bar1 progress-row5" value="100" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task2 progress-row5"></div>
+            <progress class="progress-bar progress-item-row progress-bar2 progress-row5" value="100" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task3 progress-row5"></div>
+            <div class="progress-item-row progress-item-result progress-row5">
+                <span class="progress-item-text">Passed</span>
+            </div>
+
+            <div class="progress-border progress-row6"></div>
+            <div class="progress-circle progress-display progress-item-row progress-item-task1 progress-row6"></div>
+            <progress class="progress-bar progress-item-row progress-bar1 progress-row6" value="100" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task2 progress-row6"></div>
+            <progress class="progress-bar progress-item-row progress-bar2 progress-row6" value="0" max="100"></progress>
+            <div class="progress-circle progress-item-row progress-item-task3 progress-row6"></div>
+            <div class="progress-item-row progress-item-result progress-row6">
+                <span class="progress-item-text">Failed</span>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
+
+<!-- CSS variables -->
