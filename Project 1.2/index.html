@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Project 1.2</title>
+    <style>
+        :root {
+            --color-default: #ffffff;
+            --color-new: #0081D5;
+            --color-delete: #D2335B;
+            --color-toolbar: #ECECEC;
+            --color-toggle: #4CD964;
+            --color-border: #E3E3E3;
+            --color-text: #000000;
+            --color-selected: #77B1D7;
+            --color-page: #E1F3FF;
+
+            --input-height: 2.2rem;
+            --input-width: 4rem;
+            --input-gap: 0.1rem;
+            --input-border: 0.1rem;
+            --input-toggle-active: calc(var(--input-button-diameter)*1.5);
+            --input-button-diameter: 2rem;
+            --list-item-height: 3rem;
+        }
+
+        body {
+            height: 100vh;
+            max-width: 25rem;
+            margin: 0rem;
+            margin: auto;
+            --item-padding: 0rem;
+            background-color: var(--color-default);
+        }
+
+        header>button {
+            width: 8rem;
+            height: 1.5rem;
+            border-radius: 5%;
+            color: var(--color-default);
+            border: none;
+        }
+
+        header>* {
+            margin: 0.5rem;
+        }
+
+        header>textarea {
+            width: inherit;
+        }
+
+        header {
+            display: flex;
+            flex: 1 1 auto;
+            flex-direction: row;
+            width: 100%;
+            align-content: center;
+            align-items: center;
+            background-color: var(--color-toolbar);
+        }
+
+        .button-new {
+            background-color: var(--color-new);
+        }
+
+        .button-delete {
+            background-color: var(--color-delete);
+        }
+
+        main {
+            background-color: var(--color-page);
+            height: 100%;
+            width: 100%;
+        }
+
+        ul {
+
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            height: var(--list-item-height);
+            list-style: none;
+            background-color: var(--color-default);
+        }
+
+        article {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 1px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .todo-text,
+        .todo-status {
+            margin: var(--item-padding);
+            background-color: var(--color-default);
+            height: 100%;
+        }
+
+        [data-title] {
+            position: relative;
+            flex: 1 1 auto;
+        }
+
+        [data-title]:after {
+            content: attr(data-title);
+            position: absolute;
+            left: 1rem;
+            right: 0;
+            text-align: left;
+            top: calc(50% - 0.5rem);
+        }
+
+        div[data-selected]:before {
+            content: "";
+            position: absolute;
+            height: var(--input-height);
+            top: calc(50% - 1rem);
+            width: 0.25rem;
+            left: 0.5rem;
+            background-color: var(--color-selected);
+        }
+
+        input[type=checkbox] {
+            height: 0;
+            width: 0;
+            visibility: hidden;
+        }
+
+        label {
+            cursor: pointer;
+            right: 0.5rem;
+            text-indent: -9999px;
+            width: var(--input-width);
+            height: var(--input-height);
+            background: var(--color-default);
+            display: block;
+            border-radius: var(--input-height);
+            position: relative;
+            border: var(--input-border) solid var(--color-border);
+            flex: 0 0 var(--input-width);
+        }
+
+        label:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: var(--input-button-diameter);
+            height: var(--input-button-diameter);
+            background: var(--color-grid);
+            border-radius: var(--input-button-diameter);
+            transition: 0.3s;
+            border: var(--input-border) solid var(--color-border);
+            box-shadow: 0 0 5px 0 var(--color-border)
+        }
+
+        input:checked+label {
+            background: var(--color-toggle);
+        }
+
+        input:checked+label:after {
+            left: 100%;
+            transform: translateX(-100%);
+        }
+
+        label:active:after {
+            width: var(--input-toggle-active);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <button class="button-new">New</button>
+        <textarea></textarea>
+        <button class="button-delete">Delete</button>
+    </header>
+    <main>
+        <ul>
+            <li>
+                <article>
+                    <div data-title="Text" data-selected></div>
+                    <input type="checkbox" id="switch">
+                    <label for="switch">Toggle</label>
+                </article>
+            </li>
+        </ul>
+    </main>
+</body>
+
+</html>
