@@ -16,7 +16,7 @@
     --input-gap: 0.1rem;
     --input-border: 0.1rem;
     --input-toggle-active: calc(var(--input-button-diameter)*1.5);
-    --input-button-diameter: 1.5rem;
+    --input-button-diameter: 1.3rem;
     --input-offset: -0.7rem;
 
     --list-item-height: 3rem;
@@ -166,15 +166,15 @@ main {
 .switch:after {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0.1rem;
     left: 0;
     width: var(--input-button-diameter);
     height: var(--input-button-diameter);
-    background: var(--color-grid);
+    background: var(--color-default);
     border-radius: var(--input-button-diameter);
     transition: 0.3s;
     border: var(--input-border) solid var(--color-border);
-    box-shadow: 0 0 5px 0 var(--color-border);
+    box-shadow: 0 0 1px 1px var(--color-border);
 }
 
 .switch:checked:before {
@@ -213,4 +213,32 @@ header section[data-display=true]{
 
 button:disabled{
     opacity: 0.5;
+}
+
+.button-new-todo:after{
+    content: 'New';
+}
+
+.default-header[data-is-deleting="true"] .button-new-todo:after{
+    content: 'No';
+}
+
+.button-delete-todo:after{
+    content: 'Delete';
+}
+
+.default-header[data-is-deleting="true"] .button-delete-todo:after{
+    content: 'Yes';
+}
+
+.span-todo-deleting{
+    display: none;
+    text-align: center;
+}
+.default-header[data-is-deleting="true"] .span-todo-deleting{
+    display: block;
+}
+
+.default-header[data-is-deleting="true"] .input-search-todo{
+    display: none;
 }

@@ -6,183 +6,19 @@
     <title>Project 1.2</title>
     <link rel="stylesheet" href="styles.css" />
     <script type="application/javascript" src="script.js"></script>
-    <script>
-
-        function saveItem(value) {
-            if (listItems.includes(value) === false) {
-                listItems.push(value);
-            }
-            saveStorage();
-        }
-
-        function saveStorage(){
-            localStorage[itemKey] = JSON.stringify(listItems, (key, value) =>{
-                if(key == "id")
-                    return undefined;
-                return value;
-            });
-        }
-
-        async function init() {
-            await loadData();
-            await displayData();
-        }
-
-        async function loadData() {
-            items = JSON.parse(localStorage.getItem(itemKey));
-            if (items !== null) {
-                items.forEach(async element => {
-                    listItems.push(new todo(listItems.length + 1, element.description, element.status));
-                });
-            };
-        }
-
-        async function displayData() {
-            listElement = document.getElementById('todo-list');
-            itemTemplate = document.getElementById('template-item');
-            if (listItems.length > 0) {
-                listItems.forEach(todoItem => {
-                    searchItems.push(todoItem);
-                });
-
-                await displayTodoItems();
-            }
-        }
-
-        function displayTodoItems(){
-            searchItems.forEach(item => {
-                addTodoItem(item);
-            });
-        }
-
-        async function addTodoItem(item) {
-            let li = document.importNode(itemTemplate.content, true);
-            let div = li.querySelector("div");
-            div.dataset.title = item.getDescription();
-            div.dataset.id = item.getId();
-            let input = li.querySelector("input");
-            input.checked = item.getStatus();
-            input.dataset.id = item.getId();
-            addTodoEventListeners(div, input);
-            listElement.appendChild(li);
-
-            return li;
-        }
-
-        function addTodoEventListeners(item, status){
-            console.info('adding event listener for click');
-            item.addEventListener('click', itemSelected, false);
-            status.addEventListener('click', statusChanged, false);
-        }
-
-        function removeTodoEventListeners(listItem, status){
-            console.info('removing event listener for click');
-            item.removeEventListener('click');
-            status.removeEventListener('click');
-        }
-
-        async function statusChanged(event){
-            let changed = event.target;
-            console.info('status changed event click with id: ' + changed.dataset.id);
-            let statusItem = listItems.find(item => item.getId() == changed.dataset.id);
-            statusItem.setStatus(changed.checked);
-            saveItem(statusItem);
-        }
-
-        async function itemSelected(event){
-            console.info('list item click event.')
-
-            //TODO BM: need to check this for cross platform selection.
-            if(!event.ctrlKey && !event.metaKey){
-                clearSelected();
-            }
-            let selected = event.target;
-            let index = selectedItems.indexOf(selected);
-
-            if(index != -1){
-                selectedItems.splice(index, 1);
-                selected.dataset.selected = false;
-                return;
-            }
-            
-            selectedItems.push(selected);
-            selected.dataset.selected = true;
-
-            return;
-        }
-
-        function clearSelected(){
-            selectedItems.forEach(item => {
-                item.dataset.selected = false;
-            });
-            selectedItems = new Array();
-        }
-
-        const listItems = new Array();
-        let searchItems = new Array();
-        let selectedItems = new Array();
-        const itemKey = "todo-items";
-        let listElement;
-        let itemTemplate;
-
-        window.onload = function () {
-            init();
-        };
-
-        function addNewTodo(){
-            displayHeader(false, true);
-            let addTodoText = document.getElementById('addTodoText');
-            addTodoText.focus();
-        }
-
-        function deleteTodo(){
-            if(selectedItems.length == 0){
-                return;
-            }
-
-            //TODO: add are you sure?
-        }
-
-        async function cancelTodoAdd(){
-            displayHeader(true, false);
-            let addTodoText = document.getElementById('addTodoText');
-            addTodoText.value = '';
-        }
-
-        async function saveNewTodo(){
-            let addTodoText = document.getElementById('addTodoText').value;
-            if(addTodoText == undefined || addTodoText == ""){
-                return;
-            }
-            var t = new todo(listItems.length + 1, addTodoText);
-
-            await saveItem(t);
-            searchItems.push(t);
-            //TODO: see if we cannot focus element.
-            let li = await addTodoItem(t);
-            await cancelTodoAdd();
-        }
-
-        function displayHeader(showDefault, showAdd){    
-            let defaultHeader = document.getElementById('defaultHeader');
-            let addHeader = document.getElementById('addHeader');        
-            defaultHeader.dataset.display = showDefault;
-            addHeader.dataset.display = showAdd;
-        }
-
-    </script>
 </head>
 
 <body>
     <header>
         <section id="defaultHeader" class="default-header" data-display="true">
-            <button class="button-new default-button" id="new" onclick="addNewTodo()">New</button>
-            <textarea class="input-todo"></textarea>
-            <button class="button-delete default-button" id="deleted" onclick="deleteTodo()" disabled>Delete</button>
+            <button id="newTodoButton" class="button-new default-button button-new-todo" id="new" onclick="addNewTodo()"></button>
+            <textarea id="inputTodoSearch" class="input-todo input-search-todo" onkeyup="search(event);"></textarea>
+            <span id="spanTodoDeleting" class="input-todo span-todo-deleting">Are you sure?</span>
+            <button id="deleteTodoButton" class="button-delete default-button button-delete-todo" onclick="deleteTodo()" disabled></button>
         </section>
         <section id="addHeader" class="todo-add">
-            <textarea id="addTodoText" class="input-todo"></textarea>
-            <button class="button-new default-button" onclick="saveNewTodo()">Add</button>
+            <textarea id="addTodoText" class="input-todo" onkeydown="textAcceptEvents(event);" onkeyup="textChanged(event);"></textarea>
+            <button id="addTodoButton" class="button-new default-button" onclick="saveNewTodo()" disabled>Add</button>
             <button class="button-delete default-button" onclick="cancelTodoAdd()">Cancel</button>
         </section>
     </header>
@@ -190,7 +26,7 @@
         <section>
             <template id="template-item">
                 <li class="list-item">
-                    <div data-title="" data-selected=false></div>
+                    <div data-title=""></div>
                     <input type="checkbox" id="switch" class="switch">
                 </li>
             </template>
