@@ -9,10 +9,13 @@
     class TodoItem extends HTMLElement {
         connectedCallback() {
             const currentDocument = document.currentScript.ownerDocument;
-            this.listItemTemplate = currentDocument.querySelector('#listItem').content;
+            this.listItemTemplate = currentDocument.querySelector('#listItem');
+            this.listItem = listItemTemplate.content.cloneNode(true);
             this.todoContent = listItemTemplate.querySelector('#text');
             this.switch = listItemTemplate.querySelector('#switch');
             addEventListeners();
+
+            this.appendBody(this.listItem);
         }
 
         disconnectionedCallback() {
@@ -20,6 +23,8 @@
         }
 
         addEventListeners() {
+            
+            this.itemSelectedEventHandler = itemSelected.bind(this);
             this.todoContent.addEventListener('click', itemSelected, false);
             this.switch.addEventListener('click', statusChanged, false);
         }
@@ -27,6 +32,10 @@
         removeEventListeners() {
             this.todoContent.removeEventListener('click', itemSelected, false);
             this.switch.removeEventListener('click', statusChanged, false);
+        }
+
+        itemSelected(){
+
         }
     }
 </script>
