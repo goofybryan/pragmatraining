@@ -1,0 +1,7 @@
+1. Make todo look better on phones (fluid layout) - max size instead of
+2. Read up about reflows, dom thrashing
+3. Put id on li
+4. Fix viewModel memory leak.
+5. Performance of Intl.Collator
+6. Use web components
+7. Use es6 classes

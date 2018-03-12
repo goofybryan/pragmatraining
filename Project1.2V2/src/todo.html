@@ -1,0 +1,32 @@
+<template id="listItem">
+    <li class="list-item">
+        <div id="text"></div>
+        <input id="switch" type="checkbox" class="switch">
+    </li>
+</template>
+
+<script>
+    class TodoItem extends HTMLElement {
+        connectedCallback() {
+            const currentDocument = document.currentScript.ownerDocument;
+            this.listItemTemplate = currentDocument.querySelector('#listItem').content;
+            this.todoContent = listItemTemplate.querySelector('#text');
+            this.switch = listItemTemplate.querySelector('#switch');
+            addEventListeners();
+        }
+
+        disconnectionedCallback() {
+            removeEventListeners();
+        }
+
+        addEventListeners() {
+            this.todoContent.addEventListener('click', itemSelected, false);
+            this.switch.addEventListener('click', statusChanged, false);
+        }
+
+        removeEventListeners() {
+            this.todoContent.removeEventListener('click', itemSelected, false);
+            this.switch.removeEventListener('click', statusChanged, false);
+        }
+    }
+</script>

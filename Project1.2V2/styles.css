@@ -1,0 +1,244 @@
+:root {
+    --color-default: #ffffff;
+    --color-new: #0081D5;
+    --color-delete: #D2335B;
+    --color-toolbar: #ECECEC;
+    --color-toggle: #4CD964;
+    --color-border: #E3E3E3;
+    --color-text: #000000;
+    --color-selected: #77B1D7;
+    --color-page: #E1F3FF;
+
+    --default-padding: 0.5rem;
+
+    --input-height: 1.5rem;
+    --input-width: 3rem;
+    --input-gap: 0.1rem;
+    --input-border: 0.1rem;
+    --input-toggle-active: calc(var(--input-button-diameter)*1.5);
+    --input-button-diameter: 1.3rem;
+    --input-offset: -0.7rem;
+
+    --list-item-height: 3rem;
+    --list-item-gap: 0.1rem;
+}
+
+body {
+    height: 100vh;
+    max-width: 25rem;
+    margin: 0rem;
+    margin: auto;
+    --item-padding: 0rem;
+    background-color: var(--color-default);
+    display: flex;
+    flex-direction: column;
+}
+
+.default-button {
+    width: 4rem;
+    height: 1.5rem;
+    border-radius: 5%;
+    color: var(--color-default);
+    border: none;
+}
+
+.default-header>* {
+    margin: 0.5rem;
+}
+
+.default-header>textarea {
+    width: inherit;
+    height: 1rem;
+    vertical-align: middle;
+}
+
+.default-header {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--color-toolbar);
+}
+
+.button-new {
+    background-color: var(--color-new);
+}
+
+.button-delete {
+    background-color: var(--color-delete);
+}
+
+.input-todo{
+    flex: 1 1 auto;
+}
+
+main {
+    background-color: var(--color-page);
+    width: 100%;
+    flex: 1 1 auto;
+    overflow: auto;
+}
+
+.list {
+    margin: 0;
+    padding: 0;
+}
+
+.list-item {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+    height: var(--list-item-height);
+    list-style: none;
+    background-color: var(--color-default);
+    margin-bottom: var(--list-item-gap);
+}
+
+.list-item div[data-title] {
+    position: relative;
+    flex: 1 1 auto;
+    height: 100%;
+}
+
+.list-item div[data-title]:after {
+    content: attr(data-title);
+    position: absolute;
+    left: 1rem;
+    right: 0;
+    padding-right: 1rem;
+    text-align: left;
+    top: calc(50% - 0.5rem);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: var(--color-default);
+}
+
+.list-item div[data-selected=true]:before {
+    transform: scaleY(1); 
+    transition:transform 0.3s ease-out;
+    transform-origin: center;
+}
+
+.list-item div:before {
+    content: "";
+    position: absolute;
+    top: calc(50% - var(--input-height)/2);
+    width: 0.25rem;
+    left: 0.5rem;
+    background-color: var(--color-selected);
+    height: var(--input-height);
+    transform: scaleY(0); 
+    transition:transform 0.3s ease-out;
+    transform-origin: center;
+}
+
+/*.list-item div[data-title]:active::after {
+    text-overflow: unset;
+    white-space: normal;
+    border: 1px solid var(--color-border);
+    z-index: 1000;
+    box-shadow: 0 0 10px 0 var(--color-border);
+    padding: 0.5rem;
+}*/
+
+.switch {
+    position: relative;
+    flex: 0 0 var(--input-width);
+    height: var(--input-height);
+    margin-right: var(--default-padding);
+}
+
+.switch:before {
+    content: '';
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--input-width);
+    height: var(--input-height);
+    background: var(--color-default);
+    display: block;
+    border-radius: var(--input-height);
+    border: var(--input-border) solid var(--color-border);
+}
+
+.switch:after {
+    content: '';
+    position: absolute;
+    top: 0.1rem;
+    left: 0;
+    width: var(--input-button-diameter);
+    height: var(--input-button-diameter);
+    background: var(--color-default);
+    border-radius: var(--input-button-diameter);
+    transition: 0.3s;
+    border: var(--input-border) solid var(--color-border);
+    box-shadow: 0 0 1px 1px var(--color-border);
+}
+
+.switch:checked:before {
+    background: var(--color-toggle);
+}
+
+.switch:checked:after {
+    left: calc(var(--input-width) + var(--input-border)*2);
+    transform: translateX(-100%);
+}
+
+.switch:active:after {
+    width: var(--input-toggle-active);
+}
+
+.todo-add{
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--color-toolbar);
+    display: none;
+}
+
+.todo-add >*{
+    margin: 0.5rem;
+}
+
+.todo-add textarea{
+    width: inherit;
+    height: 1rem;
+    vertical-align: middle;
+}
+
+header section[data-display=true]{
+    display: flex;
+}
+
+button:disabled{
+    opacity: 0.5;
+}
+
+.button-new-todo:after{
+    content: 'New';
+}
+
+.default-header[data-is-deleting="true"] .button-new-todo:after{
+    content: 'No';
+}
+
+.button-delete-todo:after{
+    content: 'Delete';
+}
+
+.default-header[data-is-deleting="true"] .button-delete-todo:after{
+    content: 'Yes';
+}
+
+.span-todo-deleting{
+    display: none;
+    text-align: center;
+}
+.default-header[data-is-deleting="true"] .span-todo-deleting{
+    display: block;
+}
+
+.default-header[data-is-deleting="true"] .input-search-todo{
+    display: none;
+}
