@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Project 1.2</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="styles.css" />
+    <script src="webcomponents-loader.js"></script>
+    <script type="application/javascript" src="script.js"></script>
+</head>
+
+<body>
+    <header>
+        <section id="defaultHeader" class="default-header" data-display="true">
+            <button id="newTodoButton" class="button-new default-button button-new-todo" id="new" onclick="addNewTodo()"></button>
+            <textarea id="inputTodoSearch" class="input-todo input-search-todo" onkeyup="search(event);"></textarea>
+            <span id="spanTodoDeleting" class="input-todo span-todo-deleting">Are you sure?</span>
+            <button id="deleteTodoButton" class="button-delete default-button button-delete-todo" onclick="deleteTodo()" disabled></button>
+        </section>
+        <section id="addHeader" class="todo-add">
+            <textarea id="addTodoText" class="input-todo" onkeydown="textAcceptEvents(event);" onkeyup="textChanged(event);"></textarea>
+            <button id="addTodoButton" class="button-new default-button" onclick="saveNewTodo()" disabled>Add</button>
+            <button class="button-delete default-button" onclick="cancelTodoAdd()">Cancel</button>
+        </section>
+    </header>
+    <main>
+        <section>
+            <ul class="list" id="todo-list">
+                <li-todo></li-todo>
+            </ul>
+        </section>
+    </main>
+    <link rel="import" href="src/todo.html">
+</body>
+
+</html>

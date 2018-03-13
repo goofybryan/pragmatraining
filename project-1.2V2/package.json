@@ -1,0 +1,24 @@
+{
+  "name": "project-1.2-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": false,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node ./build/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goofybryan/pragmatraining.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goofybryan/pragmatraining/issues"
+  },
+  "homepage": "https://github.com/goofybryan/pragmatraining#readme",
+  "devDependencies": {
+    "html-minifier": "^3.5.9",
+    "mkdirp": "^0.5.1"
+  }
+}

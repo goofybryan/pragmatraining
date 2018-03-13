@@ -186,7 +186,7 @@ main {
     transform: translateX(-100%);
 }
 
-.switch:active:after {
+input[type="checkbox"]:active:after {
     width: var(--input-toggle-active);
 }
 
