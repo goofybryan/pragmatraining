@@ -68,7 +68,6 @@ let searchItems = [];
 let selectedItems = [];
 const itemKey = "todo-items";
 let listElement;
-let itemTemplate;
 let defaultHeader;
 let addHeader;
 let addTodoButton;
@@ -76,7 +75,7 @@ let addTodoText;
 let deleteTodoButton;
 let inputTodoSearch;
 
-async function init() {
+function init() {
     listElement = document.getElementById('todo-list');
     defaultHeader = document.getElementById('defaultHeader');
     addHeader = document.getElementById('addHeader');
@@ -85,15 +84,16 @@ async function init() {
     deleteTodoButton = document.getElementById('deleteTodoButton');
     inputTodoSearch = document.getElementById('inputTodoSearch');
 
-    //await loadData();
-    //await displayData();
+    loadData();
+    displayData();
 }
 
-window.onload = function () {
+window.addEventListener('WebComponentsReady', function wait() {
+    window.removeEventListener('WebComponentsReady', wait);
     init();
-};
+});
 
-async function loadData() {
+function loadData() {
     items = JSON.parse(localStorage.getItem(itemKey));
     if (items !== null) {
         items.forEach(async element => {
@@ -117,7 +117,7 @@ function saveStorage() {
     });
 }
 
-async function displayData() {
+function displayData() {
     if (listItems.length > 0) {
         searchItems = Array.from(listItems);
     }
@@ -135,31 +135,36 @@ function displayTodoItems() {
         addTodoItem(item);
     });
 }
+/*
+function addTodoItem(item) {
+    const template = document.createElement('li-todo');
+    template.dataset.id = item.getId();
+    template.id = 'todo' + item.getId();
+    listElement.appendChild(template); 
+    requestAnimationFrame(() => {
+    });
+    requestAnimationFrame(() => {
+        const element = document.getElementById('todo' + item.getId());
+        console.log(element);
+    element.todo = item;
+});
+}
+*/
 
-async function addTodoItem(item) {
-    const template = document.importNode(itemTemplate.content, true);
-    const li = template.querySelector("li");
-    const div = li.querySelector("div");
-    const input = li.querySelector("input");
 
-    div.dataset.title = item.getDescription();
-    input.checked = item.getStatus();
-    addTodoEventListeners(div, input);
-    
-    listElement.appendChild(template);
-    viewModel.setListItem(item.getId(), li);
+function addTodoItem(item) {
+    var template =  document.createElement('li-todo');
+    template.dataset.id = item.getId();
+ listElement.appendChild(template); 
+    template.todo = item;
 }
 
 function addTodoEventListeners(item, status) {
     console.info('adding event listener for click');
-    item.addEventListener('click', itemSelected, false);
-    status.addEventListener('click', statusChanged, false);
 }
 
 function removeTodoEventListeners(item, status) {
     console.info('removing event listener for click');
-    item.removeEventListener('click', itemSelected, false);
-    status.removeEventListener('click', statusChanged, false);
 }
 
 function removeItemFromArray(array, item, index = undefined) {
@@ -175,19 +180,6 @@ function removeItemFromArray(array, item, index = undefined) {
     }
 
     array.splice(index, 1);
-}
-
-async function statusChanged(event) {
-    const changed = event.target;
-    const id = viewModel.getIdByListItem(changed.parentNode);
-    const statusItem = listItems.find(item => item.getId() == id);
-    statusItem.setStatus(changed.checked);
-    saveItem(statusItem);
-}
-
-async function itemSelected(event) {
-    updateSelectedItems(event.target, event.shiftKey);
-    deleteTodoButton.disabled = selectedItems.length == 0;
 }
 
 //TODO: Optimize perhaps, also check multiselect then back to single select, already must stay slected if selected.

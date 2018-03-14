@@ -83,73 +83,14 @@ main {
     padding: 0;
 }
 
-.list-item {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    align-items: center;
-    height: var(--list-item-height);
-    list-style: none;
-    background-color: var(--color-default);
-    margin-bottom: var(--list-item-gap);
-}
-
-.list-item div[data-title] {
-    position: relative;
-    flex: 1 1 auto;
-    height: 100%;
-}
-
-.list-item div[data-title]:after {
-    content: attr(data-title);
-    position: absolute;
-    left: 1rem;
-    right: 0;
-    padding-right: 1rem;
-    text-align: left;
-    top: calc(50% - 0.5rem);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: var(--color-default);
-}
-
-.list-item div[data-selected=true]:before {
-    transform: scaleY(1); 
-    transition:transform 0.3s ease-out;
-    transform-origin: center;
-}
-
-.list-item div:before {
-    content: "";
-    position: absolute;
-    top: calc(50% - var(--input-height)/2);
-    width: 0.25rem;
-    left: 0.5rem;
-    background-color: var(--color-selected);
-    height: var(--input-height);
-    transform: scaleY(0); 
-    transition:transform 0.3s ease-out;
-    transform-origin: center;
-}
-
-/*.list-item div[data-title]:active::after {
-    text-overflow: unset;
-    white-space: normal;
-    border: 1px solid var(--color-border);
-    z-index: 1000;
-    box-shadow: 0 0 10px 0 var(--color-border);
-    padding: 0.5rem;
-}*/
-
-.switch {
+input[type="checkbox"] {
     position: relative;
     flex: 0 0 var(--input-width);
     height: var(--input-height);
     margin-right: var(--default-padding);
 }
 
-.switch:before {
+input[type="checkbox"]:before {
     content: '';
     cursor: pointer;
     position: absolute;
@@ -163,7 +104,7 @@ main {
     border: var(--input-border) solid var(--color-border);
 }
 
-.switch:after {
+input[type="checkbox"]:after {
     content: '';
     position: absolute;
     top: 0.1rem;
@@ -177,11 +118,11 @@ main {
     box-shadow: 0 0 1px 1px var(--color-border);
 }
 
-.switch:checked:before {
+input[type="checkbox"]:checked:before {
     background: var(--color-toggle);
 }
 
-.switch:checked:after {
+input[type="checkbox"]:checked:after {
     left: calc(var(--input-width) + var(--input-border)*2);
     transform: translateX(-100%);
 }

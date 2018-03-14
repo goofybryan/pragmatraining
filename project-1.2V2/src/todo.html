@@ -7,28 +7,38 @@
 
 <script>
     class TodoItem extends HTMLElement {
-
+        
         get todo(){
-            return this._todo;
+            return this.getAttribute('todo') || this._todo;
         }
 
-        set todo(newValue){
-            this._todo = newValue;
+        set todo(value){
+            this._todo = value;
+            this.update();
         }
 
-        set selected(newValue){
-            this.setAttribute('selected', newValue);
+        update(){
+            if(this.todo == undefined){
+                this.textContent.data.content = null;
+                this.switch.check = null;
+                return;
+            }
+            this.todoContent.dataset.content = this.todo.getDescription();
+            this.switch.check = this.todo.getStatus();
         }
 
         connectedCallback() {
+            this.initializeTemplate();
+        }
+
+        initializeTemplate(){
             const currentDocument = document.currentScript.ownerDocument;
             this.listItemTemplate = currentDocument.querySelector('#listItem');
-            this.listItem = listItemTemplate.content.cloneNode(true);
-            this.todoContent = listItemTemplate.querySelector('#text');
-            this.switch = listItemTemplate.querySelector('#switch');
-            addEventListeners();
-
-            this.appendBody(this.listItem);
+            this.listItem = currentDocument.importNode(this.listItemTemplate.content, true);
+            this.todoContent = this.listItem.querySelector('#text');
+            this.switch = this.listItem.querySelector('#switch');
+            this.appendChild(this.listItem);
+            this.addEventListeners();
         }
 
         disconnectionedCallback() {
@@ -41,26 +51,28 @@
 
         addEventListeners() {
             
-            this.itemSelectedEventHandler = itemSelected.bind(this);
-            this.statusChangedEventHandler = statusChanged.bind(this);
-            this.todoContent.addEventListener('click', itemSelectedEventHandler, false);
-            this.switch.addEventListener('click', statusChangedEventHandler, false);
+            this.itemSelectedEventHandler = this.itemSelected.bind(this);
+            this.statusChangedEventHandler = this.statusChanged.bind(this);
+            this.todoContent.addEventListener('click', this.itemSelectedEventHandler, false);
+            this.switch.addEventListener('click', this.statusChangedEventHandler, false);
         }
 
         removeEventListeners() {
             this.todoContent.removeEventListener('click', this.itemSelectedEventHandler, false);
-            this.switch.removeEventListener('click', statusChangedEventHandler, false);
+            this.switch.removeEventListener('click', this.statusChangedEventHandler, false);
 
             this.itemSelectedEventHandler = null;
             this.statusChangedEventHandler = null;
         }
 
         itemSelected(){
-            todo.selected = !todo.selected;
+            console.log('item selected');
+            
         }
 
         statusChanged(){
-            todo.setStatus(this.switch.checked);
+            console.log('status changed');
+            this._todo.setStatus(this.switch.check);
         }
     }
 

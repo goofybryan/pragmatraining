@@ -1,0 +1,58 @@
+li-todo .list-item {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+        align-items: center;
+    height: var(--list-item-height);
+    list-style: none;
+    background-color: var(--color-default);
+    margin-bottom: var(--list-item-gap);
+}
+
+li-todo .list-item div{
+    position: relative;
+    flex: 1 1 auto;
+    height: 100%;
+}
+
+li-todo .list-item div[data-content]:after {
+    content: attr(data-content);
+    position: absolute;
+    left: 1rem;
+    right: 0;
+    padding-right: 1rem;
+    text-align: left;
+    top: calc(50% - 0.5rem);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: var(--color-default);
+}
+
+li-todo .list-item div[data-selected=true]:before {
+    transform: scaleY(1); 
+    transition:transform 0.3s ease-out;
+    transform-origin: center;
+}
+
+li-todo .list-item div:before {
+    content: "";
+    position: absolute;
+    top: calc(50% - var(--input-height)/2);
+    width: 0.25rem;
+    left: 0.5rem;
+    background-color: var(--color-selected);
+    height: var(--input-height);
+    transform: scaleY(0); 
+    transition:transform 0.3s ease-out;
+    transform-origin: center;
+}
+
+/*.list-item div[data-content]:active::after {
+    text-overflow: unset;
+    white-space: normal;
+    border: 1px solid var(--color-border);
+    z-index: 1000;
+    box-shadow: 0 0 10px 0 var(--color-border);
+    padding: 0.5rem;
+}*/
