@@ -49,15 +49,11 @@
         addEventListeners(){
             this.itemSelectedEventListener = this.itemSelected.bind(this);
             this.switch.addEventListener('click', this.itemSelectedEventListener);
-            this.todoSelectedEventListener = this.todoSelected.bind(this);
-            this.addEventListener('click', this.todoSelectedEventListener)
         }
 
         removeEventListeners(){
             this.switch.removeEventListeners('click', this.itemSelectedEventListener);
             delete this.itemSelectedEventListener;
-            this.removeEventListener('click', this.todoSelectedEventListener);
-            delete this.todoSelectedEventListener;
         }
 
         disconnectionedCallback() {
@@ -71,14 +67,6 @@
             this.todo.completed = this.switch.checked;
             event.stopPropagation();
             return false;
-        }
-
-        todoSelected(event){
-            const multiSelect = event.shiftKey;
-            const selected = !this.selected;
-            this.updateSelection(selected);
-
-            this.dispatchEvent(new CustomEvent(TodoItem.selectionChanged, {bubbles: true, detail: {obj: this, multiSelect: multiSelect}}));
         }
 
         updateSelection(selected){

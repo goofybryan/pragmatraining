@@ -135,6 +135,6 @@ button:disabled{
     background-color: var(--color-delete);
 }
 
-section[data-display=true]{
+div[data-display=true]{
     display: flex;
 }
