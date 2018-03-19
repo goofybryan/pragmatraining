@@ -1,0 +1,243 @@
+<template id="todoTemplate">
+    <section id="defaultHeader" class="default-header" data-display="true">
+        <button id="newTodoButton" class="button-new default-button button-new-todo" id="new"></button>
+        <textarea id="inputTodoSearch" class="input-todo input-search-todo"></textarea>
+        <button id="deleteTodoButton" class="button-delete default-button button-delete-todo" disabled></button>
+    </section>
+    <section id="addHeader" class="todo-add">
+        <textarea id="addTodoText" class="input-todo"></textarea>
+        <button id="addTodoButton" class="button-new default-button" disabled>Add</button>
+        <button id="cancelAddTodo" class="button-delete default-button">Cancel</button>
+    </section>
+    <section class="main">
+        <ul id="todo-list" class="list">
+        </ul>
+    </section>
+</template>
+
+
+<script>
+    class TodoList extends HTMLElement {
+
+        connectedCallback() {
+            this.viewModel = new ViewModel();
+            this.selectedItems = [];
+            this.searchItems = [];
+            this.loadTemplate();
+            this.addEventListeners();
+            this.filterItems();
+        }
+
+        loadTemplate() {
+            const currentDocument = document.currentScript.ownerDocument;
+            this.template = currentDocument.querySelector('#todoTemplate').content;
+            this.appendChild(document.importNode(this.template, true));
+            this.ul = this.querySelector('#todo-list');
+            this.newTodoButton = this.querySelector('#newTodoButton');
+            this.inputTodoSearch = this.querySelector('#inputTodoSearch');
+            this.deleteTodoButton = this.querySelector('#deleteTodoButton');
+            this.addTodoText = this.querySelector('#addTodoText');
+            this.addTodoButton = this.querySelector('#addTodoButton');
+            this.cancelAddTodo = this.querySelector('#cancelAddTodo');
+            this.defaultHeader = this.querySelector('#defaultHeader');
+            this.addTodoHeader = this.querySelector('#addHeader');
+            this.cancelAddTodo = this.querySelector('#cancelAddTodo');
+        }
+
+        addEventListeners() {
+            this.updatedSelectionEventHandler = this.updateSelection.bind(this);
+            document.addEventListener(TodoItem.selectionChanged, this.updatedSelectionEventHandler, false);
+            this.newTodoRequestedEventHandler = this.newTodoRequested.bind(this);
+            this.newTodoButton.addEventListener('click', this.newTodoRequestedEventHandler, false);
+            this.newTodoCancelledEventHandler = this.newTodoCancelled.bind(this);
+            this.cancelAddTodo.addEventListener('click', this.newTodoCancelledEventHandler, false);
+            this.saveNewTodoEventHandler = this.saveNewTodo.bind(this);
+            this.addTodoButton.addEventListener('click', this.saveNewTodoEventHandler, false);
+            this.todoTextEventHandler = this.todoTextAcceptEvents.bind(this);
+            this.addTodoText.addEventListener('keydown', this.todoTextEventHandler, false);
+            this.todoTextChangedEventHandler = this.todoTextChanged.bind(this);
+            this.addTodoText.addEventListener('keypress', this.todoTextChangedEventHandler, false);
+            this.deleteSelectedTodoItemsEventHandler = this.deleteSelectedTodoItems.bind(this);
+            this.deleteTodoButton.addEventListener('click', this.deleteSelectedTodoItemsEventHandler, false);
+            this.filterItemsEventHandler = this.filterItems.bind(this);
+            this.inputTodoSearch.addEventListener('keyup', this.filterItemsEventHandler, false);
+        }
+
+        removeEventListeners() {
+            document.removeEventListener(TodoItem.selectionChanged, this.updatedSelectionEventHandler, false);
+            this.newTodoButton.removeEventListener('click', this.newTodoRequestedEventHandler, false);
+            this.cancelAddTodo.removeEventListener('click', this.newTodoCancelledEventHandler, false);
+            this.addTodoButton.removeEventListener('click', this.saveNewTodoEventHandler, false);
+            this.addTodoText.removeEventListener('keydown', this.todoTextEventHandler, false);
+            this.addTodoText.removeEventListener('keypress', this.todoTextChangedEventHandler, false);
+            this.deleteTodoButton.removeEventListener('click', this.deleteSelectedTodoItemsEventHandler, false);
+            this.inputTodoSearch.removeEventListener('keyup', this.filterItemsEventHandler, false);
+            delete this.updatedSelectionEventHandler;
+            delete this.newTodoRequestedEventHandler;
+            delete this.newTodoCancelledEventHandler;
+            delete this.saveNewTodoEventHandler;
+            delete this.todoTextEventHandler;
+            delete this.todoTextChangedEventHandler;
+            delete this.deleteSelectedTodoItemsEventHandler;
+            delete this.filterItemsEventHandler;
+        }
+
+        disconnectionedCallback() {
+            this.removeEventListeners();
+            delete this.template;
+            delete this.ul;
+            delete this.searchItems;
+            delete this.selectedItems;
+            delete this.viewModel;
+
+            delete this.newTodoButton;
+            delete this.inputTodoSearch;
+            delete this.deleteTodoButton;
+            delete this.addTodoText;
+            delete this.addTodoButton;
+            delete this.cancelAddTodo;
+
+            delete this.addTodoHeader;
+            delete this.defaultHeader;
+        }
+
+        updateSelection(event) {
+            const selectedItem = event.detail.obj;
+            const multiSelect = event.detail.multiSelect;
+            const index = this.selectedItems.indexOf(selectedItem);
+
+            if (!multiSelect) {
+                this.clearSelected();
+            }
+
+            if (index >= 0 && !selectedItem.selected) {
+                removeItemFromArray(this.selectedItems, selectedItem, index);
+                return;
+            }
+
+            this.selectedItems.push(selectedItem);
+            this.deleteTodoButton.disabled = this.selectedItems.length == 0;
+        }
+
+        addTodoItem(item) {
+            const li = document.createElement('to-do-item');
+            li.todo = item;
+            this.ul.appendChild(li);
+            return li;
+        }
+
+        displayTodoItems() {
+            while (this.ul.firstChild) {
+                this.ul.removeChild(this.ul.firstChild);
+            }
+
+            const comparer = new Intl.Collator();
+            this.searchItems.sort((a, b) => comparer.compare(a.description, b.description));
+            this.searchItems.forEach(item => {
+                this.addTodoItem(item);
+            });
+        }
+
+        clearSelected() {
+            this.selectedItems.forEach(item => {
+                item.updateSelection(false);
+            });
+            this.selectedItems = [];
+            deleteTodoButton.disabled = true;
+        }
+
+        newTodoRequested() {
+            this.displayHeader(true);
+        }
+
+        newTodoCancelled() {
+            this.clearNewTodoText();
+            this.displayHeader(false);
+        }
+
+        clearNewTodoText(){
+            this.addTodoText.value = '';
+        }
+
+        displayHeader(showAdd) {
+            defaultHeader.dataset.display = !showAdd;
+            addHeader.dataset.display = showAdd;
+            if (showAdd) {
+                this.addTodoText.focus();
+            }
+            else {
+                this.inputTodoSearch.focus();
+            }
+
+        }
+
+        todoTextAcceptEvents(event) {
+            if (event.defaultPrevented) {
+                return; // Should do nothing if the default action has been cancelled
+            }
+            let handled = false;
+
+            const key = event.keyCode;
+
+            switch (key) {
+                case 0x0d:
+                    handled = true;
+                    this.saveNewTodo();
+                    break;
+                case 0x1b:
+                    handled = true;
+                    this.newTodoCancelled();
+                    break;
+            }
+
+            if (handled) {
+                event.preventDefault();
+            }
+        }
+
+        saveNewTodo() {
+            const todoText = addTodoText.value;
+            if (todoText == undefined || todoText == "") {
+                return;
+            }
+            const newTodo = this.viewModel.newTodo(todoText);
+            this.viewModel.save();
+            this.searchItems.push(newTodo);
+            const li = this.addTodoItem(newTodo);
+            li.scrollIntoView();
+            this.clearNewTodoText();
+            this.addTodoText.focus();
+        }
+
+        todoTextChanged(event) {
+            const textControl = event.target;
+            const textValue = textControl.value;
+
+            addTodoButton.disabled = !textValue || textValue.trim().length == 0;
+        }
+
+        deleteSelectedTodoItems(){
+            if(this.selectedItems.length == 0){
+                return;
+            }
+            
+            if(confirm("Are you sure?")){
+                this.selectedItems.forEach(item =>{
+                    this.viewModel.removeTodo(item.todo);
+                });
+
+                this.viewModel.save();
+                this.selectedItems = [];
+                this.filterItems();
+            }
+        }
+
+        filterItems(){
+            const value = this.inputTodoSearch.value;
+            this.searchItems = this.viewModel.filter(value);
+            this.displayTodoItems();
+        }
+    }
+
+    customElements.define("to-do", TodoList);
+</script>

@@ -1,12 +1,9 @@
-<template id="listItem">
-    <li class="list-item">
-        <div id="text"></div>
-        <input id="switch" type="checkbox">
-    </li>
-</template>
-
 <script>
     class TodoItem extends HTMLElement {
+
+        constructor(){
+            super();
+        }
         
         get todo(){
             return this.getAttribute('todo') || this._todo;
@@ -14,67 +11,85 @@
 
         set todo(value){
             this._todo = value;
-            this.update();
+        }
+
+        get selected(){
+            return this._selected;
+        }
+
+        set selected(value){
+            this.updateSelection(value);
         }
 
         update(){
             if(this.todo == undefined){
-                this.textContent.data.content = null;
-                this.switch.check = null;
+                this.updateValues('', undefined);
                 return;
             }
-            this.todoContent.dataset.content = this.todo.getDescription();
-            this.switch.check = this.todo.getStatus();
+
+            this.updateValues(this.todo.description, this.todo.completed);
+        }
+
+        updateValues(content, checked){
+            this.todoContent.dataset.content = content;
+            this.switch.checked = checked;
         }
 
         connectedCallback() {
-            this.initializeTemplate();
-        }
-
-        initializeTemplate(){
-            const currentDocument = document.currentScript.ownerDocument;
-            this.listItemTemplate = currentDocument.querySelector('#listItem');
-            this.listItem = currentDocument.importNode(this.listItemTemplate.content, true);
+            this.listItem = document.createElement('li');
+            this.listItem.className = 'list-item';
+            this.listItem.innerHTML = '<div id="text"></div><input id="switch" type="checkbox">';
             this.todoContent = this.listItem.querySelector('#text');
             this.switch = this.listItem.querySelector('#switch');
             this.appendChild(this.listItem);
+            this.update();
             this.addEventListeners();
+        }
+
+        addEventListeners(){
+            this.itemSelectedEventListener = this.itemSelected.bind(this);
+            this.switch.addEventListener('click', this.itemSelectedEventListener);
+            this.todoSelectedEventListener = this.todoSelected.bind(this);
+            this.addEventListener('click', this.todoSelectedEventListener)
+        }
+
+        removeEventListeners(){
+            this.switch.removeEventListeners('click', this.itemSelectedEventListener);
+            delete this.itemSelectedEventListener;
+            this.removeEventListener('click', this.todoSelectedEventListener);
+            delete this.todoSelectedEventListener;
         }
 
         disconnectionedCallback() {
             removeEventListeners();
-            this.listItemTemplate = null;
-            this.listItem = null;
-            this.todoContent = null;
-            this.switch = null;
+            delete this.listItem;
+            delete this.switch;
+            delete this.todoContent;
         }
 
-        addEventListeners() {
-            
-            this.itemSelectedEventHandler = this.itemSelected.bind(this);
-            this.statusChangedEventHandler = this.statusChanged.bind(this);
-            this.todoContent.addEventListener('click', this.itemSelectedEventHandler, false);
-            this.switch.addEventListener('click', this.statusChangedEventHandler, false);
+        itemSelected(event){
+            this.todo.completed = this.switch.checked;
+            event.stopPropagation();
+            return false;
         }
 
-        removeEventListeners() {
-            this.todoContent.removeEventListener('click', this.itemSelectedEventHandler, false);
-            this.switch.removeEventListener('click', this.statusChangedEventHandler, false);
+        todoSelected(event){
+            const multiSelect = event.shiftKey;
+            const selected = !this.selected;
+            this.updateSelection(selected);
 
-            this.itemSelectedEventHandler = null;
-            this.statusChangedEventHandler = null;
+            this.dispatchEvent(new CustomEvent(TodoItem.selectionChanged, {bubbles: true, detail: {obj: this, multiSelect: multiSelect}}));
         }
 
-        itemSelected(){
-            console.log('item selected');
-            
+        updateSelection(selected){
+            this._selected = selected;
+            this.todoContent.dataset.selected = selected;
         }
 
-        statusChanged(){
-            console.log('status changed');
-            this._todo.setStatus(this.switch.check);
+        static selectionChanged(){
+            return 'TodoSelected';
         }
     }
 
-    customElements.define("li-todo", TodoItem);
+    customElements.define("to-do-item", TodoItem);
 </script>

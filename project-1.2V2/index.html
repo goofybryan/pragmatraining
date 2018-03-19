@@ -9,31 +9,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="src/todo.css" />
+    <link rel="stylesheet" href="src/todoList.css" />
     <script src="webcomponents-loader.js"></script>
-    <script type="application/javascript" src="script.js"></script>
+    <script src="src/model.js"></script>
+    <script src="script.js"></script>
+    <link rel="import" href="src/todo.html">
+    <link rel="import" href="src/todoList.html">
 </head>
 
 <body>
-    <header>
-        <section id="defaultHeader" class="default-header" data-display="true">
-            <button id="newTodoButton" class="button-new default-button button-new-todo" id="new" onclick="addNewTodo()"></button>
-            <textarea id="inputTodoSearch" class="input-todo input-search-todo" onkeyup="search(event);"></textarea>
-            <span id="spanTodoDeleting" class="input-todo span-todo-deleting">Are you sure?</span>
-            <button id="deleteTodoButton" class="button-delete default-button button-delete-todo" onclick="deleteTodo()" disabled></button>
-        </section>
-        <section id="addHeader" class="todo-add">
-            <textarea id="addTodoText" class="input-todo" onkeydown="textAcceptEvents(event);" onkeyup="textChanged(event);"></textarea>
-            <button id="addTodoButton" class="button-new default-button" onclick="saveNewTodo()" disabled>Add</button>
-            <button class="button-delete default-button" onclick="cancelTodoAdd()">Cancel</button>
-        </section>
-    </header>
     <main>
-        <section>
-            <ul class="list" id="todo-list">
-            </ul>
-        </section>
+        <to-do></to-do>
     </main>
-    <link rel="import" href="src/todo.html">
 </body>
 
 </html>
