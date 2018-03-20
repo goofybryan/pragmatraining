@@ -46,6 +46,7 @@
         }
 
         .show {
+            will-change: transform;
             transform: scaleX(1);
         }
 
@@ -56,10 +57,10 @@
 
             main {
                 grid-column: 1/3;
-                touch-action: pan-x;
             }
 
             aside {
+                will-change: transform;
                 transform: scaleX(0);
                 transition: transform 0.3s ease-out;
                 transform-origin: right;
@@ -83,13 +84,178 @@
     </footer>
 </body>
 <script type="application/javascript">
-    window.onload = function () {
-        const main = document.querySelector('main');
-        main.addEventListener('touchend', function (event) {
-            console.log('Touch End');
-            console.log(event);
+    class swipeHandler {
+        constructor(element, direction, threshold, timespan) {
+            this._element = element;
+            this._direction = direction;
+            this._threshold = threshold;
+            this._timespan = timespan;
+            this.handleTouchStartEventHandler = this.handleTouchStart.bind(this);
+            this._element.addEventListener('touchstart', this.handleTouchStartEventHandler, { passive: true });
+        }
+
+        dispose() {
+            this._element.removeEventListener('touchstart', this.handleTouchStartEventHandler);
+            this.handleTouchStartEventHandler = null;
+            this.handleTouchMoveEventHandler = null;
+            this.handleTouchEndEventHandler = null;
+            this._direction = null;
+            this._threshold = null;
+            this._timespan = null;
+            this._element = null;
+        }
+
+        get direction() {
+            return this._direction;
+        }
+
+        set direction(value) {
+            this._direction = value;
+        }
+
+        get element() {
+            return this._element;
+        }
+
+        handleTouchStart(event) {
+            const valid = this.figureTouchAreaValid(event);
+
+            if (!valid) {
+                return;
+            }
+
+            this._clientXStart = event.touches[0].clientX;
+            this._clientYStart = event.touches[0].clientY;
+            this._touchStart = event.timeStamp;
+
+            this.handleTouchMoveEventHandler = this.handleTouchMove.bind(this);
+            this._element.addEventListener('touchmove', this.handleTouchMoveEventHandler, { passive: true });
+            this.handleTouchEndEventHandler = this.handleTouchEnd.bind(this);
+            this._element.addEventListener('touchend', this.handleTouchEndEventHandler, { passive: true });
+        }
+
+        handleTouchMove(event) {
+            this._clientXEnd = event.touches[0].clientX;
+            this._clientYEnd = event.touches[0].clientY;
+        }
+
+        handleTouchEnd(event) {
+            this._element.removeEventListener('touchmove', this.handleTouchMoveEventHandler);
+            this._element.removeEventListener('touchend', this.handleTouchEndEventHandler);
+            this.handleTouchMoveEventHandler = null;
+            this.handleTouchEndEventHandler = null;
+
+            if (event.timeStamp - this._touchStart < this._timespan) {
+                return;
+            }
+
+            const directionValid = this.figureDirectionValid(this._clientXStart, this._clientYStart, this._clientXEnd, this._clientYEnd);
+
+            if (!directionValid) {
+                return;
+            }
+
+            this._element.dispatchEvent(new CustomEvent('swipe', { bubbles: false, detail: { obj: this , direction: this._direction} }));
+        }
+
+        figureDirectionValid(xStart, yStart, xEnd, yEnd) {
+            switch (this._direction) {
+                case 'left':
+                    return xStart < xEnd;
+                case 'right':
+                    return xStart > xEnd;
+                case 'top':
+                    return yStart < yEnd;
+                case 'bottom':
+                    return yStart > yEnd;
+                default:
+                    return false;
+            }
+        }
+
+        figureTouchAreaValid(touchEvent) {
+            switch (this._direction) {
+                case 'left':
+                    return touchEvent.touches[0].clientX <= this._threshold;
+                case 'right':
+                    return touchEvent.touches[0].clientX >= this._threshold;
+                case 'top':
+                    return touchEvent.touches[0].clientY <= this._threshold;
+                case 'bottom':
+                    return touchEvent.touches[0].clientY >= this._threshold;
+                default:
+                    return false;
+            }
+        }
+
+        swapDirection() {
+            switch (this._direction) {
+                case 'left':
+                    this._direction = 'right';
+                    break;
+                case 'right':
+                    this._direction = 'left';
+                    break;
+                case 'top':
+                    this._direction = 'bottom';
+                    break;
+                case 'bottom':
+                    this._direction = 'top';
+                    break;
+            }
+        }
+    }
+
+    class swipeManager {
+        constructor(swipeHandler) {
+            this._swipeHandler = swipeHandler;
+            this.handleSwipeEventHandler = this.handleSwipe.bind(this);
+            this._swipeHandler.element.addEventListener('swipe', this.handleSwipeEventHandler, { passive: true});
+        }
+
+        dispose() {
+            this._swipeHandler.element.removeEventListener('swipe', this.handleSwipeEventHandler);
+            this.handleSwipeEventHandler = null;
+            this._swipeHandler = null;
+            this._onSwipe = null;
+        }
+
+        get onSwipe() {
+            return this._onSwipe;
+        }
+
+        set onSwipe(value){
+            this._onSwipe = value;
+        }
+
+        handleSwipe(event) {
+            if (this._onSwipe == undefined) {
+                return;
+            }
+
+            if(this._onSwipe(event) === true){
+                this._swipeHandler.swapDirection();
+            }
+        }
+
+        static create(element, direction, threshold, timespan, onSwipe){
+            const handler = new swipeHandler(element, direction, threshold, timespan);
+            const swipeMain = new swipeManager(handler);
+            swipeMain.onSwipe = onSwipe;
+            return swipeMain;
+        }
+    }
+
+    let swipeMain;
+    window.onload = function (event) {
+        swipeMain = swipeManager.create(document, 'right', 300, 200, function(event) {
+            const aside = document.querySelector('aside');
+            aside.className = event.detail.direction === 'right' ? 'show' : '';
+            return true;
         });
     };
+
+
 </script>
 
 </html>

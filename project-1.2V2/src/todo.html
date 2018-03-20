@@ -36,12 +36,10 @@
         }
 
         connectedCallback() {
-            this.listItem = document.createElement('li');
-            this.listItem.className = 'list-item';
-            this.listItem.innerHTML = '<div id="text"></div><input id="switch" type="checkbox">';
-            this.todoContent = this.listItem.querySelector('#text');
-            this.switch = this.listItem.querySelector('#switch');
-            this.appendChild(this.listItem);
+            this.className = 'list-item';
+            this.innerHTML = '<div id="text"></div><input id="switch" type="checkbox">';
+            this.todoContent = this.querySelector('#text');
+            this.switch = this.querySelector('#switch');
             this.update();
             this.addEventListeners();
         }

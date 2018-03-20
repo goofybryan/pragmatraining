@@ -9,9 +9,7 @@
         <button id="addTodoButton" class="button-new default-button" disabled>Add</button>
         <button id="cancelAddTodo" class="button-delete default-button">Cancel</button>
     </div>
-    <div class="main">
-        <ul id="todo-list" class="list">
-        </ul>
+    <div id="todo-list" class="main list">
     </div>
 </template>
 
@@ -32,7 +30,7 @@
             const currentDocument = document.currentScript.ownerDocument;
             this.template = currentDocument.querySelector('#todoTemplate').content;
             this.appendChild(document.importNode(this.template, true));
-            this.ul = this.querySelector('#todo-list');
+            this.list = this.querySelector('#todo-list');
             this.newTodoButton = this.querySelector('#newTodoButton');
             this.inputTodoSearch = this.querySelector('#inputTodoSearch');
             this.deleteTodoButton = this.querySelector('#deleteTodoButton');
@@ -60,7 +58,7 @@
             this.filterItemsEventHandler = this.filterItems.bind(this);
             this.inputTodoSearch.addEventListener('keyup', this.filterItemsEventHandler, false);
             this.todoSelectedEventListener = this.todoSelected.bind(this);
-            this.ul.addEventListener('click', this.todoSelectedEventListener);
+            this.list.addEventListener('click', this.todoSelectedEventListener);
 
         }
 
@@ -72,7 +70,7 @@
             this.addTodoText.removeEventListener('keypress', this.todoTextChangedEventHandler, false);
             this.deleteTodoButton.removeEventListener('click', this.deleteSelectedTodoItemsEventHandler, false);
             this.inputTodoSearch.removeEventListener('keyup', this.filterItemsEventHandler, false);
-            this.ul.removeEventListener('click', this.todoSelectedEventListener);
+            this.list.removeEventListener('click', this.todoSelectedEventListener);
             delete this.newTodoRequestedEventHandler;
             delete this.newTodoCancelledEventHandler;
             delete this.saveNewTodoEventHandler;
@@ -86,7 +84,7 @@
         disconnectionedCallback() {
             this.removeEventListeners();
             delete this.template;
-            delete this.ul;
+            delete this.list;
             delete this.searchItems;
             delete this.selectedItems;
             delete this.viewModel;
@@ -104,10 +102,6 @@
 
         todoSelected(event) {
             var selectedElement = event.target;
-            while(selectedElement && selectedElement.tagName.toLowerCase() !== 'to-do-item'){
-                selectedElement = selectedElement.parentNode;
-            }
-
             if(selectedElement == undefined){
                 return;
             }
@@ -138,13 +132,13 @@
         addTodoItem(item) {
             const li = document.createElement('to-do-item');
             li.todo = item;
-            this.ul.appendChild(li);
+            this.list.appendChild(li);
             return li;
         }
 
         displayTodoItems() {
-            while (this.ul.firstChild) {
-                this.ul.removeChild(this.ul.firstChild);
+            while (this.list.firstChild) {
+                this.list.removeChild(this.list.firstChild);
             }
 
             const comparer = new Intl.Collator();
