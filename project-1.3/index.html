@@ -50,6 +50,10 @@
             transform: scaleX(1);
         }
 
+        .out-of-focus {
+            opacity: 0.3;
+        }
+
         @media only screen and (-webkit-min-device-pixel-ratio: 2) and (max-device-width: 480px) {
             body {
                 grid-template-columns: [content] auto [sidebar] 90%;
@@ -249,8 +253,11 @@
     let swipeMain;
     window.onload = function (event) {
         swipeMain = swipeManager.create(document, 'right', 300, 200, function(event) {
+            const main = document.querySelector('main');
             const aside = document.querySelector('aside');
-            aside.className = event.detail.direction === 'right' ? 'show' : '';
+            const applyClass = event.detail.direction === 'right'; 
+            main.className = applyClass ? 'out-of-focus' : '';
+            aside.className = applyClass ? 'show' : '';
             return true;
         });
     };
