@@ -1,0 +1,37 @@
+<script>
+    'use strict';
+
+    import {GridRenderer} from "./grid-renderer";
+
+    class Grid extends HTMLDivElement {
+        constructor() {
+            super();
+
+        }
+
+        get data() {
+            return this.data;
+        }
+
+        set data(value) {
+            this.data = value;
+            this.update();
+        }
+
+        get columns() {
+            return this.columns;
+        }
+
+        set columns(value) {
+            this.columns = value;
+            this.update();
+        }
+
+        connectedCallback(){
+            this.renderer = new GridRenderer(this, this.columns, this.data);
+            this.renderer.render();
+        }
+    }
+
+    customElements.define("grid", Grid);
+</script>

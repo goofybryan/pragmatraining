@@ -1,0 +1,6 @@
+.grid {
+  --columns: auto;
+  display: grid;
+  grid-template-columns: var(--columns);
+}
+
